@@ -23,6 +23,8 @@
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
 
+    --primary: #e2001a;
+
     --color-accent: var(--color-neutral-800);
     --color-accent-content: var(--color-neutral-800);
     --color-accent-foreground: var(--color-white);
@@ -64,3 +66,17 @@ select:focus[data-flux-control] {
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
+
+.auth-logo {
+    font-weight: 800;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-logo i {
+    margin-right: 10px;
+    font-size: 2rem;
+}
