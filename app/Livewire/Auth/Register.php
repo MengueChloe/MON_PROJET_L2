@@ -25,15 +25,23 @@ class Register extends Component
 
     public string $password_confirmation = '';
 
-    // Champs spécifiques bénévoles
     public string $phone = '';
+
+    // Champs spécifiques bénévoles
     public string $skills = '';
-    public string $bio = '';
+    public string $date_birth = '';
+    public string $availability = '';
+    public string $why_to_volonteer = '';
+    public string $location = '';
 
     // Champs spécifiques organisations
-    public string $address = '';
-    public string $website = '';
+    public string $organisation_name = '';
+    public string $activiy_domain = '';
     public string $description = '';
+    public string $website = '';
+    public string $representative = '';
+    public string $postal_code = '';
+    public string $creation_date = '';
 
     /**
      * Handle an incoming registration request.
@@ -71,9 +79,12 @@ class Register extends Component
         // 3. Enregistrement des infos spécifiques
         if ($this->account_type === 'benevole') {
             $this->validate([
-                'phone' => ['required', 'string', 'max:20'],
-                'skills' => ['nullable', 'string'],
-                'bio' => ['nullable', 'string'],
+                'phone' => ['nullable', 'string', 'max:20'],
+                'skills' => ['required', 'string'],
+                'date_birth' => ['required', 'date'],
+                'availability' => ['required', 'string', 'max:100'],
+                'why_to_volonteer' => ['required', 'string'],
+                'location' => ['nullable', 'string', 'max:50'],
             ]);
 
             Benevole::create([
@@ -81,23 +92,37 @@ class Register extends Component
                 'phone' => $this->phone,
                 'name' => $this->name,
                 'skills' => $this->skills,
-                'bio' => $this->bio,
+                'date_birth' => $this->date_birth,
+                'availability' => $this->availability,
+                'why_to_volonteer' => $this->why_to_volonteer,
+                'location' => $this->location,
             ]);
         }
 
         if ($this->account_type === 'organisation') {
             $this->validate([
-                'address' => ['required', 'string', 'max:255'],
+                'organisation_name' => ['required', 'string', 'max:50'],
+                'activiy_domain' => ['required', 'string', 'max:50'],
+                'description' => ['required', 'string'],
+                'location' => ['nullable', 'string', 'max:50'],
                 'website' => ['nullable', 'url'],
-                'description' => ['nullable', 'string'],
+                'representative' => ['required', 'string', 'max:50'],
+                'postal_code' => ['nullable', 'string', 'max:50'],
+                'creation_date' => ['required', 'date'],
             ]);
 
             Organisation::create([
                 'user_id' => $user->id,
-                'name' => $this->name, // ici le "name" est celui de l’orga
+                'name' => $this->organisation_name, // ici le "name" est celui de l’orga
                 'address' => $this->address,
                 'website' => $this->website,
                 'description' => $this->description,
+                'activiy_domain' => $this->activiy_domain,
+                'location' => $this->location,
+                'representative' => $this->representative,
+                'postal_code' => $this->postal_code,
+                'creation_date' => $this->creation_date,
+                'phone' => $this->phone,
             ]);
         }
 

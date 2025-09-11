@@ -18,8 +18,8 @@ class Organisation extends Model
         'website', 
         'representative', 
         'postal_code', 
-        'location', 
         'creation_date', 
+        'phone'
         ];
 
     

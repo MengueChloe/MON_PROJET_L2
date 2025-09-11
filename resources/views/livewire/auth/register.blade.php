@@ -64,6 +64,14 @@
             class="rounded-md border border-red-600"
         />
 
+        <!-- location -->
+        <flux:input
+            wire:model="location"
+            :label="__('Localisation')"
+            type="text"
+            class="rounded-md border border-red-600"
+        />
+
         <!-- Champs spécifiques -->
         @if($account_type === 'benevole')
             <!-- Téléphone bénévole -->
@@ -76,6 +84,23 @@
                 class="rounded-md border border-red-600"
             />
 
+            <!-- date_birth -->
+            <flux:input
+                wire:model="date_birth"
+                :label="__('Date de Naissance')"
+                type="date"
+                class="rounded-md border border-red-600"
+            />
+
+            <!-- availability -->
+            <flux:input
+                wire:model="availability"
+                :label="__('Votre disponibilité')"
+                type="text"
+                placeholder="Ex: Lundi, Mardi, Mercredi, ..."
+                class="rounded-md border border-red-600"
+            />
+            
             <!-- Compétences -->
             <flux:input
                 wire:model="skills"
@@ -85,21 +110,52 @@
                 class="rounded-md border border-red-600"
             />
 
-            <!-- Bio -->
+            <!-- why_to_volonteer -->
             <flux:textarea
-                wire:model="bio"
-                :label="__('À propos de vous')"
+                wire:model="why_to_volonteer"
+                :label="__('Vos Motivations')"
                 placeholder="Présentez-vous en quelques lignes..."
                 class="rounded-md border border-red-600"
             />
+
         @elseif($account_type === 'organisation')
-            <!-- Adresse organisation -->
+        
+            <!-- name -->
             <flux:input
-                wire:model="address"
-                :label="__('Adresse')"
+                wire:model="organisation_name"
+                :label="__('Nom de l\'organisation')"
                 type="text"
                 required
-                placeholder="Quartier, Ville"
+                placeholder="UNESCO"
+                class="rounded-md border border-red-600"
+            />
+            
+            <!-- representative -->
+            <flux:input
+                wire:model="representative"
+                :label="__('Nom du Représentant')"
+                type="text"
+                required
+                placeholder="Paul Joule"
+                class="rounded-md border border-red-600"
+            />
+           
+            <!-- creation_date -->
+            <flux:input
+                wire:model="creation_date"
+                :label="__('Date de création')"
+                type="date"
+                required
+                class="rounded-md border border-red-600"
+            />
+            
+            <!-- activiy_domain -->
+            <flux:input
+                wire:model="activiy_domain"
+                :label="__('Domaine d\'activité')"
+                type="text"
+                required
+                placeholder="Santé"
                 class="rounded-md border border-red-600"
             />
 
