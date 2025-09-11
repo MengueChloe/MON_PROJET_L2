@@ -12,7 +12,8 @@ class CandidacyController extends Controller
      */
     public function index()
     {
-        return Candidature::with(['benevole', 'mission'])->get();
+        // return Candidature::with(['benevole', 'mission'])->get();
+        return view('candidacies');
     }
 
     /**

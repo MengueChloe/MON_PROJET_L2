@@ -114,7 +114,6 @@ class Register extends Component
             Organisation::create([
                 'user_id' => $user->id,
                 'name' => $this->organisation_name, // ici le "name" est celui de l’orga
-                'address' => $this->address,
                 'website' => $this->website,
                 'description' => $this->description,
                 'activiy_domain' => $this->activiy_domain,

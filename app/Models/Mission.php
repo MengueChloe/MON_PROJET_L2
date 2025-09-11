@@ -24,6 +24,6 @@ class Mission extends Model {
     }
 
     public function candidatures() {
-        return $this->hasMany(Candidature::class);
+        return $this->hasMany(Candidacy::class);
     }
 }

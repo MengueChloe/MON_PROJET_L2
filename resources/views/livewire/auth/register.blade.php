@@ -8,13 +8,13 @@
         
         <!-- Account Type -->
         <flux:select
-            wire:model="account_type"
+            wire:model.live="account_type"
             :label="__('Type de compte')"
             required
             class="rounded-md border border-red-600"
         >
             <option value="benevole" >{{ __('Bénévole') }}</option>
-            <option value="organisation" default>{{ __('Organisation') }}</option>
+            <option value="organisation">{{ __('Organisation') }}</option>
         </flux:select>
 
         <!-- Name -->
@@ -119,7 +119,7 @@
             />
 
         @elseif($account_type === 'organisation')
-        
+
             <!-- name -->
             <flux:input
                 wire:model="organisation_name"

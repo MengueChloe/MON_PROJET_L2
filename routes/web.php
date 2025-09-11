@@ -7,16 +7,22 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BenevoleController;
 use App\Http\Controllers\OrganisationController;
 use App\Http\Controllers\MissionController;
-use App\Http\Controllers\CandidatureController;
+use App\Http\Controllers\CandidacyController;
+use App\Http\Controllers\TaskController;
 // use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+
+// Route::get('/missions', function () {
+//     return view('missions');
+// })->name('missions');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
@@ -27,9 +33,10 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Route::apiResource('users', UserController::class);
-Route::apiResource('benevoles', BenevoleController::class);
-Route::apiResource('organisations', OrganisationController::class);
-Route::apiResource('missions', MissionController::class);
-Route::apiResource('candidatures', CandidatureController::class);
+Route::resource('volunteers', BenevoleController::class);
+Route::resource('organisations', OrganisationController::class);
+Route::resource('missions', MissionController::class);
+Route::resource('candidacies', CandidacyController::class);
+Route::resource('tasks', TaskController::class);
 
 require __DIR__.'/auth.php';

@@ -12,7 +12,8 @@ class MissionController extends Controller
      */
     public function index()
     {
-        return Mission::with('organisation')->get();
+        $missions = Mission::with('organisation')->paginate();
+        return view('missions', ['missions' => $missions]);
     }
 
     /**
@@ -20,7 +21,7 @@ class MissionController extends Controller
      */
     public function create()
     {
-        //
+        return view('missions.create');
     }
 
     /**
@@ -29,13 +30,20 @@ class MissionController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'organisation_id' => 'required|exists:organisations,id',
+            // 'organisation_id' => 'required|exists:organisations,id',
             'title' => 'required|string',
             'description' => 'required|string',
+            'location' => 'required|string',
+            'skills_required' => 'required|string',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
         ]);
-        return Mission::create($validated);
+
+        $validated['organisation_id'] = auth()->user()->organisation->id;
+
+        Mission::create($validated);
+
+        return $this->returnAllMissions();
     }
 
     /**
@@ -43,7 +51,7 @@ class MissionController extends Controller
      */
     public function show(Mission $mission)
     {
-        return $mission->load('organisation', 'candidatures');
+        return view('missions.show', ['mission' => $mission->load('organisation', 'candidatures')]);
     }
 
     /**
@@ -51,7 +59,7 @@ class MissionController extends Controller
      */
     public function edit(Mission $mission)
     {
-        //
+        return view('missions.edit', ['mission' => $mission]);
     }
 
     /**
@@ -60,7 +68,7 @@ class MissionController extends Controller
     public function update(Request $request, Mission $mission)
     {
         $mission->update($request->all());
-        return $mission;
+        return $this->returnAllMissions();
     }
 
     /**
@@ -69,6 +77,16 @@ class MissionController extends Controller
     public function destroy(Mission $mission)
     {
         $mission->delete();
-        return response()->noContent();
+        // return response()->noContent();
+        return $this->returnAllMissions();
+    }
+    
+    private function returnAllMissions()
+    {
+        $missions = Mission::where('organisation_id', auth()->user()->organisation->id)
+            ->with('organisation')
+            ->paginate();
+
+        return view('missions', ['missions' => $missions]);
     }
 }
