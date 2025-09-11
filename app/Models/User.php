@@ -22,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'type',
+        'gender'
     ];
 
     /**
@@ -57,5 +59,13 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    public function benevole() {
+        return $this->hasOne(Benevole::class);
+    }
+
+    public function organisation() {
+        return $this->hasOne(Organisation::class);
     }
 }
