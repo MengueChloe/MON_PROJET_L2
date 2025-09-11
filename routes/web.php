@@ -20,9 +20,8 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-// Route::get('/missions', function () {
-//     return view('missions');
-// })->name('missions');
+Route::get('/show/missions', [MissionController::class, 'all'])->name('missions.public');
+Route::get('/apply/mission/{id}', [CandidacyController::class, 'apply'])->name('missions.apply');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');

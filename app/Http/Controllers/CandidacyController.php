@@ -15,6 +15,12 @@ class CandidacyController extends Controller
         // return Candidature::with(['benevole', 'mission'])->get();
         return view('candidacies');
     }
+    
+    public function apply(int $id)
+    {
+        $mission = Mission::find($id);
+        return view(candidacies.apply, ['mission' => $mission]);
+    }
 
     /**
      * Show the form for creating a new resource.

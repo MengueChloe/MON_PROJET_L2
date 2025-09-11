@@ -7,6 +7,15 @@ use Illuminate\Http\Request;
 
 class MissionController extends Controller
 {
+    public function all()
+    {
+        // On récupère toutes les missions
+        $missions = Mission::latest()->paginate();
+
+        // On envoie ça vers la vue
+        return view('missions.public-index', compact('missions'));
+    }
+
     /**
      * Display a listing of the resource.
      */
