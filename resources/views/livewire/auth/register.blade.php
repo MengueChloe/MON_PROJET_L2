@@ -13,8 +13,8 @@
             required
             class="rounded-md border border-red-600"
         >
-            <option value="benevole">{{ __('Bénévole') }}</option>
-            <option value="organisation">{{ __('Organisation') }}</option>
+            <option value="benevole" >{{ __('Bénévole') }}</option>
+            <option value="organisation" default>{{ __('Organisation') }}</option>
         </flux:select>
 
         <!-- Name -->
@@ -63,6 +63,63 @@
             viewable
             class="rounded-md border border-red-600"
         />
+
+        <!-- Champs spécifiques -->
+        @if($account_type === 'benevole')
+            <!-- Téléphone bénévole -->
+            <flux:input
+                wire:model="phone"
+                :label="__('Téléphone')"
+                type="text"
+                required
+                placeholder="+237 6XX XXX XXX"
+                class="rounded-md border border-red-600"
+            />
+
+            <!-- Compétences -->
+            <flux:input
+                wire:model="skills"
+                :label="__('Compétences')"
+                type="text"
+                placeholder="Ex: secourisme, organisation d’événements"
+                class="rounded-md border border-red-600"
+            />
+
+            <!-- Bio -->
+            <flux:textarea
+                wire:model="bio"
+                :label="__('À propos de vous')"
+                placeholder="Présentez-vous en quelques lignes..."
+                class="rounded-md border border-red-600"
+            />
+        @elseif($account_type === 'organisation')
+            <!-- Adresse organisation -->
+            <flux:input
+                wire:model="address"
+                :label="__('Adresse')"
+                type="text"
+                required
+                placeholder="Quartier, Ville"
+                class="rounded-md border border-red-600"
+            />
+
+            <!-- Site web -->
+            <flux:input
+                wire:model="website"
+                :label="__('Site web')"
+                type="url"
+                placeholder="https://exemple.org"
+                class="rounded-md border border-red-600"
+            />
+
+            <!-- Description organisation -->
+            <flux:textarea
+                wire:model="description"
+                :label="__('Description de l\'organisation')"
+                placeholder="Parlez de vos objectifs, actions, valeurs..."
+                class="rounded-md border border-red-600"
+            />
+        @endif
 
         <div class="flex items-center justify-end">
             <flux:button type="submit" variant="danger" class="w-full">

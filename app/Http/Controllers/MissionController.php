@@ -12,7 +12,7 @@ class MissionController extends Controller
      */
     public function index()
     {
-        //
+        return Mission::with('organisation')->get();
     }
 
     /**
@@ -28,7 +28,14 @@ class MissionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'organisation_id' => 'required|exists:organisations,id',
+            'title' => 'required|string',
+            'description' => 'required|string',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
+        ]);
+        return Mission::create($validated);
     }
 
     /**
@@ -36,7 +43,7 @@ class MissionController extends Controller
      */
     public function show(Mission $mission)
     {
-        //
+        return $mission->load('organisation', 'candidatures');
     }
 
     /**
@@ -52,7 +59,8 @@ class MissionController extends Controller
      */
     public function update(Request $request, Mission $mission)
     {
-        //
+        $mission->update($request->all());
+        return $mission;
     }
 
     /**
@@ -60,6 +68,7 @@ class MissionController extends Controller
      */
     public function destroy(Mission $mission)
     {
-        //
+        $mission->delete();
+        return response()->noContent();
     }
 }

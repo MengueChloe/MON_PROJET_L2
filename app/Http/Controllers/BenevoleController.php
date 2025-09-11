@@ -12,7 +12,7 @@ class BenevoleController extends Controller
      */
     public function index()
     {
-        //
+        return Benevole::with(['user', 'candidatures'])->get();
     }
 
     /**
@@ -20,7 +20,14 @@ class BenevoleController extends Controller
      */
     public function create()
     {
-        //
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'phone'   => 'nullable|string',
+            'skills'  => 'nullable|string',
+            'bio'     => 'nullable|string',
+        ]);
+
+        return Benevole::create($validated);
     }
 
     /**
@@ -36,7 +43,7 @@ class BenevoleController extends Controller
      */
     public function show(Benevole $benevole)
     {
-        //
+        return $benevole->load(['user', 'candidatures']);
     }
 
     /**
@@ -52,7 +59,8 @@ class BenevoleController extends Controller
      */
     public function update(Request $request, Benevole $benevole)
     {
-        //
+        $benevole->update($request->all());
+        return $benevole;
     }
 
     /**
@@ -60,6 +68,7 @@ class BenevoleController extends Controller
      */
     public function destroy(Benevole $benevole)
     {
-        //
+        $benevole->delete();
+        return response()->noContent();
     }
 }

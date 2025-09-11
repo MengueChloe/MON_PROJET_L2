@@ -4,6 +4,11 @@ use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BenevoleController;
+use App\Http\Controllers\OrganisationController;
+use App\Http\Controllers\MissionController;
+use App\Http\Controllers\CandidatureController;
+// use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -20,5 +25,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
 });
+
+// Route::apiResource('users', UserController::class);
+Route::apiResource('benevoles', BenevoleController::class);
+Route::apiResource('organisations', OrganisationController::class);
+Route::apiResource('missions', MissionController::class);
+Route::apiResource('candidatures', CandidatureController::class);
 
 require __DIR__.'/auth.php';

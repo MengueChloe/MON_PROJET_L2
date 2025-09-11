@@ -12,7 +12,7 @@ class CandidacyController extends Controller
      */
     public function index()
     {
-        //
+        return Candidature::with(['benevole', 'mission'])->get();
     }
 
     /**
@@ -28,7 +28,14 @@ class CandidacyController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'benevole_id' => 'required|exists:benevoles,id',
+            'mission_id'  => 'required|exists:missions,id',
+            'motivation'  => 'nullable|string',
+            'status'      => 'in:pending,accepted,rejected',
+        ]);
+
+        return Candidature::create($validated);
     }
 
     /**
@@ -36,7 +43,7 @@ class CandidacyController extends Controller
      */
     public function show(Candidacy $candidacy)
     {
-        //
+        return $candidature->load(['benevole', 'mission']);
     }
 
     /**
@@ -52,7 +59,13 @@ class CandidacyController extends Controller
      */
     public function update(Request $request, Candidacy $candidacy)
     {
-        //
+        $validated = $request->validate([
+            'motivation' => 'nullable|string',
+            'status'     => 'in:pending,accepted,rejected',
+        ]);
+
+        $candidature->update($validated);
+        return $candidature;
     }
 
     /**
@@ -60,6 +73,7 @@ class CandidacyController extends Controller
      */
     public function destroy(Candidacy $candidacy)
     {
-        //
+        $candidature->delete();
+        return response()->noContent();
     }
 }

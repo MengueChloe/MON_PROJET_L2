@@ -12,7 +12,7 @@ class OrganisationController extends Controller
      */
     public function index()
     {
-        //
+        return Organisation::with('missions')->get();
     }
 
     /**
@@ -28,7 +28,15 @@ class OrganisationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'user_id'     => 'required|exists:users,id',
+            'name'        => 'required|string',
+            'address'     => 'nullable|string',
+            'website'     => 'nullable|string',
+            'description' => 'nullable|string',
+        ]);
+
+        return Organisation::create($validated);
     }
 
     /**
@@ -36,7 +44,7 @@ class OrganisationController extends Controller
      */
     public function show(Organisation $organisation)
     {
-        //
+        return $organisation->load('missions');
     }
 
     /**
@@ -52,7 +60,8 @@ class OrganisationController extends Controller
      */
     public function update(Request $request, Organisation $organisation)
     {
-        //
+        $organisation->update($request->all());
+        return $organisation;
     }
 
     /**
@@ -60,6 +69,7 @@ class OrganisationController extends Controller
      */
     public function destroy(Organisation $organisation)
     {
-        //
+        $organisation->delete();
+        return response()->noContent();
     }
 }
