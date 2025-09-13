@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Organisation;
 use Illuminate\Http\Request;
+use App\Models\Activity;
 
 class TaskController extends Controller
 {
@@ -12,7 +13,18 @@ class TaskController extends Controller
      */
     public function index()
     {
-        return view('tasks');
+        // For bénévoles, show only their activities; for organisateurs, show activities for their missions
+        $activites = auth()->user()->type === 'benevole'
+            ? Activity::where('benevole_id', auth()->user()->benevole->id)
+                ->with(['mission', 'benevole.user', 'responsable'])
+                ->get()
+                ->groupBy('mission_id')
+            : Activity::whereHas('mission', fn($q) => $q->where('organisation_id', auth()->user()->organisation->id))
+                ->with(['mission', 'benevole.user', 'responsable'])
+                ->get()
+                ->groupBy('mission_id');
+
+        return view('tasks',['activites' => $activites]);
     }
 
     /**
@@ -20,7 +32,18 @@ class TaskController extends Controller
      */
     public function create()
     {
-        //
+        // Only organisateurs can create activities
+        if (auth()->user()->type !== 'organisateur') {
+            return redirect()->route('tasks.index')->with('error', 'Action non autorisée.');
+        }
+
+        $missionId = $request->query('mission_id');
+        $mission = $missionId ? Mission::findOrFail($missionId) : null;
+        $missions = auth()->user()->organisation->missions;
+        $benevoles = $mission ? $mission->candidatures->where('status', 'accepted')->pluck('benevole') : collect([]);
+        $users = \App\Models\User::where('type', 'organisateur')->get();
+
+        return view('tasks.create', compact('mission', 'missions', 'benevoles', 'users'));
     }
 
     /**
