@@ -21,6 +21,7 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 Route::get('/show/missions', [MissionController::class, 'all'])->name('missions.public');
+Route::get('/show/missions/{id}', [MissionController::class, 'showDetails'])->name('missions.public-details');
 Route::get('/apply/mission/{id}', [CandidacyController::class, 'apply'])->name('missions.apply');
 
 Route::middleware(['auth'])->group(function () {

@@ -8,7 +8,7 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-    <title>ActTogether - Nos Missions</title>
+    <title>ActTogether - {{ $mission->title }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -97,33 +97,21 @@
             border-radius: 2px;
         }
 
+        .mission-header {
+            background: linear-gradient(135deg, rgba(226, 0, 26, 0.9), rgba(165, 0, 18, 0.9)), url('https://source.unsplash.com/1400x400/?volunteer,community,{{ rand(1,1000) }}');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 6rem 0;
+            margin-top: -76px;
+            padding-top: 10rem;
+        }
+
         .mission-card {
             background: white;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s;
-            overflow: hidden;
-        }
-
-        .mission-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .mission-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .mission-card-body {
-            padding: 1.5rem;
-        }
-
-        .mission-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+            padding: 2rem;
         }
 
         .mission-meta {
@@ -132,22 +120,19 @@
             margin-bottom: 1rem;
         }
 
-        .search-section {
+        .organisation-card {
             background: var(--light-color);
-            padding: 3rem 0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
 
-        .search-form {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .search-form input {
-            border-radius: 8px 0 0 8px;
-        }
-
-        .search-form button {
-            border-radius: 0 8px 8px 0;
+        .organisation-card img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 1rem;
         }
 
         footer {
@@ -191,66 +176,84 @@
     <!-- Navigation -->
     @include('partials.navbar')
 
-    <!-- Search Section -->
-    <section class="search-section">
+    <!-- Mission Header -->
+    <section class="mission-header mt-4">
         <div class="container">
-            <h2 class="section-title">Trouvez une mission</h2>
-            <form action="{{ route('missions.public') }}" method="GET" class="search-form d-flex">
-                <input type="text" name="search" class="form-control" placeholder="Rechercher une mission..." value="{{ request('search') }}">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
-            </form>
+            <h1 class="display-4 fw-bold mb-3">{{ $mission->title }}</h1>
+            <div class="mission-meta text-white">
+                <p class="mb-1"><i class="fas fa-building me-2"></i>{{ $mission->organisation->name }}</p>
+                @if ($mission->start_date)
+                    <p class="mb-1"><i class="fas fa-calendar-alt me-2"></i>{{ $mission->start_date }} @if ($mission->end_date) - {{ $mission->end_date }} @endif</p>
+                @endif
+            </div>
         </div>
     </section>
 
-    <!-- Missions List -->
+    <!-- Mission Details -->
     <section class="py-5">
         <div class="container">
             <div class="row">
-                @forelse ($missions as $mission)
-                    <div class="col-md-6 col-lg-4 mb-4">
-                        <a href="{{ route('missions.public-details', $mission->id) }}" class="text-decoration-none">
-                            <div class="mission-card">
-                                @if($mission->image)
-                                    <img src="{{ asset('storage/'.$mission->image) }}" alt="Mission {{ $mission->title }}">
-                                @else
-                                    <img src="https://picsum.photos/600/400?random={{ $mission->id }}" alt="Mission par défaut">
+                <div class="col-lg-8">
+                    <div class="mission-card mb-4">
+                        <h2 class="section-title">Détails de la mission</h2>
+                        <p>{{ $mission->description }}</p>
+                        @if ($mission->start_date || $mission->end_date)
+                            <h4 class="mt-4">Période</h4>
+                            <p>
+                                @if ($mission->start_date)
+                                    Début : {{ $mission->start_date }}
                                 @endif
-                                <div class="mission-card-body">
-                                    <h3 class="mission-title">{{ $mission->title }}</h3>
-                                    <div class="mission-meta">
-                                        <p class="mb-1"><i class="fas fa-building me-2"></i>{{ $mission->organisation->name }}</p>
-                                        @if ($mission->start_date)
-                                            <p class="mb-1"><i class="fas fa-calendar-alt me-2"></i>{{ $mission->start_date }} @if ($mission->end_date) - {{ $mission->end_date }} @endif</p>
-                                        @endif
-                                    </div>
-                                    <p>{{ Str::limit($mission->description, 100) }}</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <a href="{{ route('missions.public-details', $mission->id) }}" class="btn btn-outline-primary">Voir les détails</a>
-                                        @auth
-                                            @if (auth()->user()->type === 'benevole')
-                                                <form action="{{ route('candidacies.store') }}" method="POST">
-                                                    @csrf
-                                                    <input type="hidden" name="mission_id" value="{{ $mission->id }}">
-                                                    <input type="hidden" name="benevole_id" value="{{ auth()->user()->benevole->id }}">
-                                                    <button type="submit" class="btn btn-primary">Postuler</button>
-                                                </form>
-                                            @endif
-                                        @endauth
-                                        @guest
-                                            <a href="{{ route('login') }}" class="btn btn-primary">Postuler</a>
-                                        @endguest
-                                    </div>
+                                @if ($mission->end_date)
+                                    - Fin : {{ $mission->end_date }}
+                                @endif
+                            </p>
+                        @endif
+                        <h4 class="mt-4">Statut</h4>
+                        <p>{{ $mission->is_published ? 'Publiée' : 'Non publiée' }}</p>
+                    </div>
+                    @auth
+                        @if (auth()->user()->type === 'benevole')
+                            @if ($existingCandidature)
+                                <div class="alert alert-info">
+                                    Vous avez déjà postulé à cette mission. Statut : {{ $existingCandidature->status }}
                                 </div>
-                            </div>
-                        </a>
+                            @else
+                                <form action="{{ route('candidacies.store') }}" method="POST" class="mb-4">
+                                    @csrf
+                                    <input type="hidden" name="mission_id" value="{{ $mission->id }}">
+                                    <input type="hidden" name="benevole_id" value="{{ auth()->user()->benevole->id }}">
+                                    <div class="mb-3">
+                                        <label for="motivation" class="form-label">Lettre de motivation (facultatif)</label>
+                                        <textarea name="motivation" id="motivation" class="form-control" rows="5" placeholder="Expliquez pourquoi vous souhaitez rejoindre cette mission..."></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-lg">Postuler à la mission</button>
+                                </form>
+                            @endif
+                        @endif
+                    @endauth
+                    @guest
+                        <div class="alert alert-info">
+                            <a href="{{ route('login') }}" class="text-decoration-none">Connectez-vous</a> pour postuler à cette mission.
+                        </div>
+                    @endguest
+                </div>
+                <div class="col-lg-4">
+                    <div class="organisation-card">
+                        <h3 class="mb-3">À propos de l'organisation</h3>
+                        <img src="https://source.unsplash.com/100x100/?ngo,organization,{{ rand(1,1000) }}" alt="{{ $mission->organisation->name }}" class="img-fluid">
+                        <h4>{{ $mission->organisation->name }}</h4>
+                        @if ($mission->organisation->address)
+                            <p class="mission-meta"><i class="fas fa-map-marker-alt me-2"></i>{{ $mission->organisation->address }}</p>
+                        @endif
+                        @if ($mission->organisation->website)
+                            <p class="mission-meta"><i class="fas fa-globe me-2"></i><a href="{{ $mission->organisation->website }}" target="_blank" class="text-decoration-none">{{ $mission->organisation->website }}</a></p>
+                        @endif
+                        @if ($mission->organisation->description)
+                            <p>{{ Str::limit($mission->organisation->description, 150) }}</p>
+                        @endif
                     </div>
-                @empty
-                    <div class="col-12 text-center">
-                        <p class="text-muted">Aucune mission trouvée.</p>
-                    </div>
-                @endforelse
+                </div>
             </div>
-            {{ $missions->appends(request()->query())->links() }}
         </div>
     </section>
 

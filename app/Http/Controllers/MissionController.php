@@ -4,16 +4,38 @@ namespace App\Http\Controllers;
 
 use App\Models\Mission;
 use Illuminate\Http\Request;
+use App\Models\Candidacy;
 
 class MissionController extends Controller
 {
-    public function all()
+    public function all(Request $request)
     {
         // On récupère toutes les missions
-        $missions = Mission::latest()->paginate();
+        // $missions = Mission::latest()->paginate();
 
         // On envoie ça vers la vue
+        // return view('missions.public-index', compact('missions'));
+
+        $query = Mission::query()->where('is_published', true);
+        if ($search = $request->input('search')) {
+            $query->where('title', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%");
+        }
+        $missions = $query->with('organisation')->paginate(10);
         return view('missions.public-index', compact('missions'));
+    }
+
+    public function showDetails(int $id)
+    {
+        $mission = Mission::with(['organisation'])->find($id);
+
+        $existingCandidature = auth()->check() && auth()->user()->type === 'benevole'
+            ? Candidacy::where('benevole_id', auth()->user()->benevole->id)
+                        ->where('mission_id', $mission->id)
+                        ->first()
+            : null;
+
+        return view('missions.public-details', ['mission' => $mission, 'existingCandidature'=>  $existingCandidature]);
     }
 
     /**
