@@ -87,15 +87,16 @@
             }
             
             .hero-section {
-                background: linear-gradient(135deg, rgba(226, 0, 26, 0.9), rgba(165, 0, 18, 0.9)), url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80');
-                background-size: cover;
-                background-position: center;
-                color: white;
-                padding: 6rem 0;
-                margin-top: -76px;
-                padding-top: 10rem;
-            }
-            
+    background: linear-gradient(135deg, rgba(74, 38, 43, 0.7), rgba(73, 40, 46, 0.94)),
+        url('https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=1200&q=80.jpg');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 10rem 0;
+    margin-top: -10px;
+    padding-top: 10rem;
+}
+
             .section-title {
                 position: relative;
                 margin-bottom: 3rem;
@@ -206,7 +207,6 @@
     </head>
     <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col">
         
-
         <!-- Navigation -->
          @include('partials.navbar')
 
@@ -217,16 +217,15 @@
                     <div class="col-lg-7">
                         <h1 class="display-4 fw-bold mb-4">Agissez ensemble pour un monde meilleur</h1>
                         <p class="lead mb-5">Rejoignez la plateforme qui connecte les bénévoles passionnés avec les associations qui ont besoin de vous. Ensemble, faisons la différence !</p>
-                        @if (Route::has('register.benevole') && Route::has('register.association'))
+                        @if (Route::has('register'))
                             <div class="d-flex flex-wrap gap-3">
-                                <a href="{{ route('register.benevole') }}" class="btn btn-lg btn-primary">Devenir bénévole</a>
-                                <a href="{{ route('register.association') }}" class="btn btn-lg btn-outline-light">Inscrire mon association</a>
+                                <a href="{{ route('register') }}" class="btn btn-lg btn-primary">Devenir bénévole</a>
+                                <a href="{{ route('register') }}" class="btn btn-lg btn-outline-light">Inscrire mon association</a>
                             </div>
                         @endif
                     </div>
                     <div class="col-lg-5 d-none d-lg-block">
-                        <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="img-fluid rounded shadow" alt="Bénévoles ensemble">
-                    </div>
+                        
                 </div>
             </div>
         </section>
@@ -376,9 +375,9 @@
                     <div class="col-md-6 col-lg-4 mb-4">
                         <div class="testimonial-card">
                             <div class="d-flex align-items-center mb-3">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="testimonial-avatar" alt="Thomas">
+                                <img src="WhatsApp Image 2025-09-21 à 19.27.41_4c6ac88e.p" class="testimonial-avatar" alt="Cyriale">
                                 <div>
-                                    <h5 class="mb-0">Thomas</h5>
+                                    <h5 class="mb-0">Cyriale</h5>
                                     <p class="text-muted mb-0">Bénévole régulier</p>
                                 </div>
                             </div>
@@ -388,9 +387,9 @@
                     <div class="col-md-6 col-lg-4 mb-4">
                         <div class="testimonial-card">
                             <div class="d-flex align-items-center mb-3">
-                                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="testimonial-avatar" alt="Sophie">
+                                <img src="WhatsApp Image 2025-09-21 à 19.25.44_d0ef1ec6.jpeg" class="testimonial-avatar" alt="Brea">
                                 <div>
-                                    <h5 class="mb-0">Sophie</h5>
+                                    <h5 class="mb-0">Brea</h5>
                                     <p class="text-muted mb-0">Responsable association</p>
                                 </div>
                             </div>
@@ -400,9 +399,9 @@
                     <div class="col-md-6 col-lg-4 mb-4">
                         <div class="testimonial-card">
                             <div class="d-flex align-items-center mb-3">
-                                <img src="https://images.unsplash.com/photo-1552058544-f2b08422138a?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" class="testimonial-avatar" alt="Nicolas">
+                                <img src="" class="testimonial-avatar" alt="Nicolas">
                                 <div>
-                                    <h5 class="mb-0">Nicolas</h5>
+                                    <h5 class="mb-0">CHARLES-LOUANGA</h5>
                                     <p class="text-muted mb-0">Bénévole occasionnel</p>
                                 </div>
                             </div>

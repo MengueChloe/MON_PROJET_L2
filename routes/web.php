@@ -9,6 +9,29 @@ use App\Http\Controllers\OrganisationController;
 use App\Http\Controllers\MissionController;
 use App\Http\Controllers\CandidacyController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\AssociationDashboardControlle;
+use App\Http\Controllers\CandidatureController;
+use App\Http\Controllers\TacheController;
+use App\Http\Controllers\EvenementController;
+
+// Routes pour les missions
+Route::get('/missions', [MissionController::class, 'index'])->name('missions.index');
+
+// Routes pour les candidatures
+Route::get('/candidatures', [CandidatureController::class, 'index'])->name('candidatures.index');
+
+// Routes pour les tâches
+Route::get('/taches', [TacheController::class, 'index'])->name('taches.index');
+
+// Routes pour les événements
+Route::get('/evenements', [EvenementController::class, 'index'])->name('evenements.index');
+
+
+Route::get('/dashboard-association', [App\Http\Controllers\DashboardController::class, 'index'])
+    ->name('dashboard.association')
+    ->middleware('auth'); // protège la route si besoin
+
+
 // use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
@@ -26,6 +49,7 @@ Route::get('/apply/mission/{id}', [CandidacyController::class, 'apply'])->name('
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
+
 
     Route::get('settings/profile', Profile::class)->name('settings.profile');
     Route::get('settings/password', Password::class)->name('settings.password');
