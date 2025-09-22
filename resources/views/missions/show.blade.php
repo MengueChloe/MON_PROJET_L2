@@ -2,8 +2,8 @@
     <div class="p-6">
         <div class="mb-6 flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-gray-800">{{ $mission->title }}</h1>
-                <p class="text-gray-600 mt-1">Publié par {{ $mission->organisation->name ?? 'Organisation inconnue' }}</p>
+                <h1 class="dark:text-white text-2xl font-bold text-gray-800">{{ $mission->title }}</h1>
+                <p class="dark:text-gray-400 text-gray-600 mt-1">Publié par {{ $mission->organisation->name ?? 'Organisation inconnue' }}</p>
             </div>
 
             <div class="flex space-x-2">

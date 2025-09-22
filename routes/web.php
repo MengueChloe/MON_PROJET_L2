@@ -47,6 +47,8 @@ Route::get('/show/missions', [MissionController::class, 'all'])->name('missions.
 Route::get('/show/missions/{id}', [MissionController::class, 'showDetails'])->name('missions.public-details');
 Route::get('/apply/mission/{id}', [CandidacyController::class, 'apply'])->name('missions.apply');
 
+Route::get('/show/volunteers', [TaskController::class, 'getAllVolunteers'])->name('tasks.benevoles');
+
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 

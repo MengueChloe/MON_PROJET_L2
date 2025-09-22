@@ -2,7 +2,7 @@
     <div class="p-6">
         <h1 class="text-2xl font-bold text-gray-800 mb-6">{{ __('Créer une nouvelle activité') }}</h1>
 
-        <form method="POST" action="{{ route('activities.store') }}" class="bg-white shadow rounded-lg p-6">
+        <form method="POST" action="{{ route('tasks.store') }}" class="bg-white shadow rounded-lg p-6">
             @csrf
             <div class="mb-4">
                 <label for="mission_id" class="block text-sm font-medium text-gray-700">Mission</label>
@@ -20,7 +20,7 @@
                 <select name="benevole_id" id="benevole_id" class="form-select mt-1 block w-full rounded-lg border-gray-300" required>
                     <option value="">Sélectionner un bénévole</option>
                     @foreach ($benevoles as $benevole)
-                        <option value="{{ $benevole->id }}">{{ $benevole->user->name }}</option>
+                        <option value="{{ $benevole->id }}" {{ old('benevole_id') == $benevole->id ? 'selected' : '' }}>{{ $benevole->user->name }}</option>
                     @endforeach
                 </select>
                 @error('benevole_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -66,8 +66,11 @@
                 <label for="responsable_id" class="block text-sm font-medium text-gray-700">Responsable</label>
                 <select name="responsable_id" id="responsable_id" class="form-select mt-1 block w-full rounded-lg border-gray-300">
                     <option value="">Aucun responsable</option>
-                    @foreach ($users as $user)
+                    <!-- @foreach ($users as $user)
                         <option value="{{ $user->id }}" {{ old('responsable_id') == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                    @endforeach -->
+                    @foreach ($benevoles as $benevole)
+                        <option value="{{ $benevole->id }}" {{ old('benevole_id') == $benevole->id ? 'selected' : '' }}>{{ $benevole->user->name }}</option>
                     @endforeach
                 </select>
                 @error('responsable_id') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -75,8 +78,45 @@
 
             <div class="flex space-x-2">
                 <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700">Créer</button>
-                <a href="{{ route('activites.index') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">Annuler</a>
+                <a href="{{ route('tasks.index') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">Annuler</a>
             </div>
         </form>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#mission_id').on('change', function() {
+                var missionId = $(this).val();
+                var benevoleSelect = $('#benevole_id');
+                var assignerSelect = $('#responsable_id');
+
+                // Clear existing options
+                benevoleSelect.html('<option value="">Sélectionner un bénévole</option>');
+                assignerSelect.html('<option value="">Sélectionner un responsable</option>');
+
+                if (missionId) {
+                    // Make AJAX request to fetch bénévoles
+                    $.ajax({
+                        url: '{{ route("tasks.benevoles") }}',
+                        type: 'GET',
+                        data: { mission_id: missionId },
+                        success: function(data) {
+                            data.benevoles.forEach(function(benevole) {
+                                benevoleSelect.append(
+                                    `<option value="${benevole.id}">${benevole.user.name}</option>`
+                                );
+                                assignerSelect.append(
+                                    `<option value="${benevole.id}">${benevole.user.name}</option>`
+                                );
+                            });
+                        },
+                        error: function() {
+                            alert('Erreur lors du chargement des bénévoles.');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </x-layouts.app>

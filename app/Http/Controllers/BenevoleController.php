@@ -14,6 +14,11 @@ class BenevoleController extends Controller
     {
         return Benevole::with(['user', 'candidatures'])->get();
     }
+    
+    public function byMission()
+    {
+        return Benevole::with(['user', 'candidatures'])->where('mission_id', )->get();
+    }
 
     /**
      * Show the form for creating a new resource.

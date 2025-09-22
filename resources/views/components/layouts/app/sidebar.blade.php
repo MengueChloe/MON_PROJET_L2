@@ -17,11 +17,10 @@
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
 
                     @if(auth()->user()->type === 'organisation')
-                        <flux:navlist.item icon="briefcase" :href="route('missions.index')" :current="request()->routeIs('missions.*')" wire:navigate>{{ __('Missions') }}</flux:navlist.item>
-                        <flux:navlist.item icon="users" :href="route('candidacies.index')" :current="request()->routeIs('candidacies.*')" wire:navigate>{{ __('Candidatures') }}</flux:navlist.item>
-                        <flux:navlist.item icon="check" :href="route('tasks.index')" :current="request()->routeIs('tasks.*')" wire:navigate>{{ __('Tâches') }}</flux:navlist.item>
+                    <flux:navlist.item icon="briefcase" :href="route('missions.index')" :current="request()->routeIs('missions.*')" wire:navigate>{{ __('Missions') }}</flux:navlist.item>
+                    <flux:navlist.item icon="users" :href="route('candidacies.index')" :current="request()->routeIs('candidacies.*')" wire:navigate>{{ __('Candidatures') }}</flux:navlist.item>
                     @endif
-
+                    
                     @if(auth()->user()->type === 'benevole')
                         <flux:navlist.item 
                             icon="users" 
@@ -31,6 +30,7 @@
                             {{ __('Candidatures') }}
                         </flux:navlist.item>
                     @endif
+                    <flux:navlist.item icon="check" :href="route('tasks.index')" :current="request()->routeIs('tasks.*')" wire:navigate>{{ __('Tâches') }}</flux:navlist.item>
                 </flux:navlist.group>
                 
             </flux:navlist>
