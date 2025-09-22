@@ -1,7 +1,7 @@
 <x-layouts.app :title="__('Missions')">
     <div class="p-6">
         <div class="flex items-center justify-between mb-6">
-            <h1 class="text-2xl font-bold text-gray-800">{{ __('Liste des missions') }}</h1>
+            <h1 class="dark:text-white text-2xl font-bold text-gray-800">{{ __('Liste des missions') }}</h1>
            
             <a href="{{ route('missions.create') }}"
                class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition">

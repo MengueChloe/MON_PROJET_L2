@@ -43,7 +43,9 @@ class MissionController extends Controller
      */
     public function index()
     {
-        $missions = Mission::with('organisation')->paginate();
+        $missions = Mission::with('organisation')
+            ->where('organisation_id', auth()->user()->organisation->id)
+            ->paginate();
         return view('missions', ['missions' => $missions]);
     }
 
