@@ -4,15 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Models\Organisation;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return User::with(['benevole', 'organisation'])->get();
+        if (auth()->user()->type !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Action non autorisée.');
+        }
+
+        $query = User::query();
+
+        if ($search = $request->input('search')) {
+            $query->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+        }
+
+        $users = $query->paginate();
+
+        return view('users', compact('users'));
     }
 
     /**
@@ -20,7 +35,11 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        if (auth()->user()->type !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Action non autorisée.');
+        }
+
+        return view('users.create');
     }
 
     /**
@@ -28,16 +47,33 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name'     => 'required|string',
-            'email'    => 'required|email|unique:users',
-            'password' => 'required|string|min:6',
-            'type'     => 'required|in:benevole,organisateur,admin',
+        // $validated = $request->validate([
+        //     'name'     => 'required|string',
+        //     'email'    => 'required|email|unique:users',
+        //     'password' => 'required|string|min:8',
+        //     'type'     => 'required|in:benevole,organisation,admin',
+        // ]);
+
+        if (auth()->user()->type !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Action non autorisée.');
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8',
+            'type' => 'required|in:benevole,organisation,admin',
         ]);
 
-        $validated['password'] = Hash::make($validated['password']);
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'type' => $request->type,
+            'is_blocked' => false,
+        ]);
 
-        return User::create($validated);
+        return redirect()->route('users.index')->with('success', 'Utilisateur créé avec succès.');
     }
 
     /**
@@ -51,9 +87,13 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Organisation $organisation)
+    public function edit(User $user)
     {
-        //
+        if (auth()->user()->type !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Action non autorisée.');
+        }
+
+        return view('users.edit', compact('user'));
     }
 
     /**
@@ -61,22 +101,25 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-       $validated = $request->validate([
-            'name'     => 'sometimes|string',
-            'email'    => 'sometimes|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:6',
-            'type'     => 'sometimes|in:benevole,organisateur,admin',
-        ]);
-
-        if (!empty($validated['password'])) {
-            $validated['password'] = Hash::make($validated['password']);
-        } else {
-            unset($validated['password']);
+        if (auth()->user()->type !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Action non autorisée.');
         }
 
-        $user->update($validated);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            // 'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8|confirmed',
+            'type' => 'required|in:benevole,organisation,admin',
+        ]);
 
-        return $user;
+        $user->update([
+            'name' => $request->name,
+            // 'email' => $request->email,
+            'type' => $request->type,
+            'password' => $request->password ? Hash::make($request->password) : $user->password,
+        ]);
+
+        return redirect()->route('users.index')->with('success', 'Utilisateur mis à jour avec succès.');
     }
 
     /**
@@ -84,7 +127,36 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        if (auth()->user()->type !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Action non autorisée.');
+        }
+
+        if ($user->id === auth()->id()) {
+            return redirect()->route('users.index')->with('error', 'Vous ne pouvez pas supprimer votre propre compte.');
+        }
+
         $user->delete();
-        return response()->noContent();
+
+        return redirect()->route('users.index')->with('success', 'Utilisateur supprimé avec succès.');
+    }
+    
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function toggleBlock(int $id)
+    {
+        if (auth()->user()->type !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'Action non autorisée.');
+        }
+
+        $user = User::find($id);
+
+        if ($user->id === auth()->id()) {
+            return redirect()->route('users.index')->with('error', 'Vous ne pouvez pas bloquer/débloquer votre propre compte.');
+        }
+
+        $user->update(['is_blocked' => !$user->is_blocked]);
+
+        return redirect()->route('users.index')->with('success', $user->is_blocked ? 'Utilisateur bloqué avec succès.' : 'Utilisateur débloqué avec succès.');
     }
 }

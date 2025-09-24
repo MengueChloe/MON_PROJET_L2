@@ -13,6 +13,7 @@ use App\Http\Controllers\AssociationDashboardControlle;
 use App\Http\Controllers\CandidatureController;
 use App\Http\Controllers\TacheController;
 use App\Http\Controllers\EvenementController;
+use App\Http\Controllers\UserController;
 
 // Routes pour les missions
 Route::get('/missions', [MissionController::class, 'index'])->name('missions.index');
@@ -56,6 +57,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/profile', Profile::class)->name('settings.profile');
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
+    Route::post('users/block/{id}',[ UserController::class, 'toggleBlock'])->name('users.toggleBlock');
 });
 
 // Route::apiResource('users', UserController::class);
@@ -64,5 +66,6 @@ Route::resource('organisations', OrganisationController::class);
 Route::resource('missions', MissionController::class);
 Route::resource('candidacies', CandidacyController::class);
 Route::resource('tasks', TaskController::class);
+Route::resource('users', UserController::class);
 
 require __DIR__.'/auth.php';

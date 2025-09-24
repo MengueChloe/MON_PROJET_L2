@@ -30,7 +30,12 @@
                             {{ __('Candidatures') }}
                         </flux:navlist.item>
                     @endif
-                    <flux:navlist.item icon="check" :href="route('tasks.index')" :current="request()->routeIs('tasks.*')" wire:navigate>{{ __('Tâches') }}</flux:navlist.item>
+                    @if(auth()->user()->type === 'benevole' || auth()->user()->type === 'organisation')
+                        <flux:navlist.item icon="check" :href="route('tasks.index')" :current="request()->routeIs('tasks.*')" wire:navigate>{{ __('Tâches') }}</flux:navlist.item>
+                    @endif
+                    @if(auth()->user()->type === 'admin')
+                        <flux:navlist.item icon="users" :href="route('users.index')" :current="request()->routeIs('users')" wire:navigate>{{ __('Utilisateurs ') }}</flux:navlist.item>
+                    @endif
                 </flux:navlist.group>
                 
             </flux:navlist>
