@@ -17,9 +17,17 @@ class CandidacyController extends Controller
         // return Candidature::with(['benevole', 'mission'])->get();
         // $candidacies = Candidacy::where('benevole_id', auth()->user()->benevole->id)->paginate();
 
-        $query = auth()->user()->type === 'benevole'
-        ? Candidacy::where('benevole_id', auth()->user()->benevole->id)
-        : Candidacy::whereHas('mission', fn($q) => $q->where('organisation_id', auth()->user()->organisation->id));
+        if (auth()->user()->type === 'admin') {
+            $query =  Candidacy::query();
+        } else if (auth()->user()->type === 'benevole') {
+            $query =  Candidacy::where('benevole_id', auth()->user()->benevole->id);
+        } else {
+            $query = Candidacy::whereHas('mission', fn($q) => $q->where('organisation_id', auth()->user()->organisation->id));
+        }
+
+        // $query = auth()->user()->type === 'benevole'
+        // ? Candidacy::where('benevole_id', auth()->user()->benevole->id)
+        // : Candidacy::whereHas('mission', fn($q) => $q->where('organisation_id', auth()->user()->organisation->id));
 
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {

@@ -16,7 +16,7 @@
                      <!-- {{-- Accessible à tout le monde --}} -->
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
 
-                    @if(auth()->user()->type === 'organisation')
+                    @if(auth()->user()->type === 'organisation' || auth()->user()->type === 'admin')
                     <flux:navlist.item icon="briefcase" :href="route('missions.index')" :current="request()->routeIs('missions.*')" wire:navigate>{{ __('Missions') }}</flux:navlist.item>
                     <flux:navlist.item icon="users" :href="route('candidacies.index')" :current="request()->routeIs('candidacies.*')" wire:navigate>{{ __('Candidatures') }}</flux:navlist.item>
                     @endif
@@ -30,7 +30,7 @@
                             {{ __('Candidatures') }}
                         </flux:navlist.item>
                     @endif
-                    @if(auth()->user()->type === 'benevole' || auth()->user()->type === 'organisation')
+                    @if(auth()->user()->type === 'benevole' || auth()->user()->type === 'organisation' || auth()->user()->type === 'admin')
                         <flux:navlist.item icon="check" :href="route('tasks.index')" :current="request()->routeIs('tasks.*')" wire:navigate>{{ __('Tâches') }}</flux:navlist.item>
                     @endif
                     @if(auth()->user()->type === 'admin')

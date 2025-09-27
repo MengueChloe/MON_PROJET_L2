@@ -14,6 +14,7 @@ use App\Http\Controllers\CandidatureController;
 use App\Http\Controllers\TacheController;
 use App\Http\Controllers\EvenementController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DashboardController;
 
 // Routes pour les missions
 Route::get('/missions', [MissionController::class, 'index'])->name('missions.index');
@@ -40,9 +41,9 @@ Route::get('/', function () {
 })->name('home');
 
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+// Route::view('dashboard', 'dashboard')
+//     ->middleware(['auth', 'verified'])
+//     ->name('dashboard');
 
 Route::get('/show/missions', [MissionController::class, 'all'])->name('missions.public');
 Route::get('/show/missions/{id}', [MissionController::class, 'showDetails'])->name('missions.public-details');
@@ -53,11 +54,11 @@ Route::get('/show/volunteers', [TaskController::class, 'getAllVolunteers'])->nam
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
-
     Route::get('settings/profile', Profile::class)->name('settings.profile');
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
     Route::post('users/block/{id}',[ UserController::class, 'toggleBlock'])->name('users.toggleBlock');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
 // Route::apiResource('users', UserController::class);

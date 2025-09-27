@@ -16,15 +16,32 @@ class TaskController extends Controller
     public function index()
     {
         // For bénévoles, show only their activities; for organisateurs, show activities for their missions
-        $activites = auth()->user()->type === 'benevole'
-            ? Activity::where('benevole_id', auth()->user()->benevole->id)
-                ->with(['mission', 'benevole.user', 'responsable'])
-                ->get()
-                ->groupBy('mission_id')
-            : Activity::whereHas('mission', fn($q) => $q->where('organisation_id', auth()->user()->organisation->id))
+        if (auth()->user()->type === 'admin') {
+            $activites =  Activity::query()
                 ->with(['mission', 'benevole.user', 'responsable'])
                 ->get()
                 ->groupBy('mission_id');
+        } else if(auth()->user()->type === 'benevole') {
+            $activites =  Activity::where('benevole_id', auth()->user()->benevole->id)
+                ->with(['mission', 'benevole.user', 'responsable'])
+                ->get()
+                ->groupBy('mission_id');
+        } else {
+            $activites = Activity::whereHas('mission', fn($q) => $q->where('organisation_id', auth()->user()->organisation->id))
+                ->with(['mission', 'benevole.user', 'responsable'])
+                ->get()
+                ->groupBy('mission_id');
+        }
+
+        // $activites = auth()->user()->type === 'benevole'
+        //     ? Activity::where('benevole_id', auth()->user()->benevole->id)
+        //         ->with(['mission', 'benevole.user', 'responsable'])
+        //         ->get()
+        //         ->groupBy('mission_id')
+        //     : Activity::whereHas('mission', fn($q) => $q->where('organisation_id', auth()->user()->organisation->id))
+        //         ->with(['mission', 'benevole.user', 'responsable'])
+        //         ->get()
+        //         ->groupBy('mission_id');
 
         return view('tasks',['activites' => $activites]);
     }
